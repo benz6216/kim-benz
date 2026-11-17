@@ -739,6 +739,110 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   .thumb{width:72px}
   body{font-size:12px}
 }
+
+/* ==========================================================================
+   Season (월별 계절감) — 색 두 가지(--s-deep, --s-tint)만 달마다 바뀜
+   ========================================================================== */
+:root{--s-deep:#a77a12;--s-tint:#f8f2e2;--season-img:none;
+  --s-ink:var(--s-deep);--s-wash:color-mix(in srgb,var(--s-tint) 75%,var(--bg));--s-soft:color-mix(in srgb,var(--s-deep) 11%,var(--surface));
+  --lg:#a50034;--lg-soft:color-mix(in srgb,var(--lg) 7%,var(--surface))}
+@media (prefers-color-scheme:dark){:root{--s-ink:color-mix(in srgb,var(--s-deep) 45%,#fff);--s-wash:color-mix(in srgb,var(--s-deep) 13%,var(--bg));
+  --s-soft:color-mix(in srgb,var(--s-deep) 22%,var(--surface));--lg:#ff6f98}}
+.site-header{position:relative;z-index:2}
+.site-header::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--s-deep),color-mix(in srgb,var(--s-deep) 30%,var(--s-tint)) 70%,transparent)}
+body{background:linear-gradient(180deg,var(--s-wash) 0,var(--bg) 820px) no-repeat,var(--bg)}
+.intro{position:relative}
+.intro>.container,main>section>.container,.site-footer{position:relative;z-index:1}
+.season-chip{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px 0 8px;border-radius:999px;background:var(--s-soft);color:var(--s-ink);font-size:13px;font-weight:700;white-space:nowrap}
+.season-chip svg{width:15px;height:15px}
+.season-card{margin-top:28px;max-width:600px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:2px 14px;padding:18px 20px;border-radius:var(--r-l);
+  background:color-mix(in srgb,var(--surface) 86%,transparent);border:1px solid color-mix(in srgb,var(--s-deep) 20%,var(--line));
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:var(--shadow-1)}
+.season-ic{grid-row:span 3;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--s-soft);color:var(--s-ink)}
+.season-ic svg{width:24px;height:24px}
+.season-lbl{font-size:12.5px;font-weight:600;color:var(--s-ink)}
+.season-card h3{font-size:16px;font-weight:700;letter-spacing:-.02em;line-height:1.45}
+.season-card p{margin-top:4px;font-size:14px;line-height:1.7;color:var(--ink-2)}
+/* 계절 그림: 상담 카드 무대 + 마무리 영역 (그림이 도착하면 서서히) */
+.adv-stage::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--season-img) center 72%/cover no-repeat;opacity:0;transition:opacity .8s var(--ease)}
+.has-season-img .adv-stage::before{opacity:.95}
+.closing::before{content:"";position:absolute;inset:0;background:var(--season-img) right bottom/auto 115% no-repeat;opacity:0;transition:opacity .8s;pointer-events:none;
+  -webkit-mask:linear-gradient(to left,#000 5%,transparent 72%);mask:linear-gradient(to left,#000 5%,transparent 72%)}
+.has-season-img .closing::before{opacity:.42}
+.closing-body{position:relative;z-index:1}
+@media (prefers-color-scheme:dark){.has-season-img .adv-stage::before{opacity:.38}.has-season-img .closing::before{opacity:.2}}
+.ft-season{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--s-ink)}
+.ft-season svg{width:15px;height:15px}
+/* 떨어지는 잎·꽃잎·눈 (첫 화면에만, 몇 개만) */
+.season-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+html.lock .season-fx i{animation-play-state:paused}
+.season-fx i{position:absolute;top:-20px;left:var(--x);width:var(--s);height:var(--s);opacity:0;animation:s-fall var(--d) linear var(--w) infinite;will-change:transform}
+.season-fx.snow i{border-radius:50%;background:color-mix(in srgb,var(--s-deep) 22%,#fff)}
+.season-fx.petal i{border-radius:100% 0 100% 0;background:color-mix(in srgb,var(--s-deep) 40%,#fff)}
+.season-fx.leaf i{background:var(--sprite) no-repeat;background-size:400% 100%;background-position:calc(var(--f,0) * 33.333%) 0}
+@keyframes s-fall{0%{opacity:0;transform:translate3d(0,0,0) rotate(0) rotateX(0)}
+  10%{opacity:var(--o,.85)}
+  25%{transform:translate3d(calc(var(--dx) * .25 + 22px),calc(var(--h,640px) * .25),0) rotate(60deg) rotateX(55deg)}
+  50%{transform:translate3d(calc(var(--dx) * .5 - 18px),calc(var(--h,640px) * .5),0) rotate(140deg) rotateX(0)}
+  75%{transform:translate3d(calc(var(--dx) * .75 + 18px),calc(var(--h,640px) * .75),0) rotate(230deg) rotateX(60deg)}
+  85%{opacity:var(--o,.85)}
+  100%{opacity:0;transform:translate3d(var(--dx),var(--h,640px),0) rotate(310deg) rotateX(0)}}
+@media (prefers-reduced-motion:reduce){.season-fx{display:none}}
+@media print{.season-fx,.season-card{display:none}}
+
+/* ==========================================================================
+   LG 임직원 전용 (html[data-audience="lg"])
+   ========================================================================== */
+.lg-only{display:none!important}
+html[data-audience="lg"] .lg-only{display:block!important}
+html[data-audience="lg"] .chip.lg-only{display:inline-flex!important}
+.lg-card{position:relative;overflow:hidden;padding:32px 32px 26px;border-radius:var(--r-l);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-1)}
+.lg-card::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--lg) 10%,transparent),transparent);pointer-events:none}
+.lg-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--lg)}
+.lg-eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lg)}
+.lg-card h2{margin-top:10px;font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1.35}
+.lg-card .lg-desc{margin-top:8px;font-size:15px;line-height:1.75;color:var(--ink-2)}
+.lg-stack{display:grid;grid-template-columns:repeat(3,1fr);margin-top:22px;border:1px solid var(--line);border-radius:var(--r-m)}
+.lg-stack li{position:relative;padding:18px 22px;transition:opacity .25s,background .25s}
+.lg-stack li+li{border-left:1px solid var(--line)}
+.lg-stack li+li::before{content:"+";position:absolute;left:-13px;top:50%;z-index:1;width:26px;height:26px;margin-top:-13px;border-radius:50%;background:var(--surface);border:1px solid var(--line-2);
+  display:grid;place-items:center;font-size:15px;font-weight:700;color:var(--muted);line-height:1}
+.lg-stack li:first-child{border-radius:var(--r-m) 0 0 var(--r-m)}
+.lg-stack li:last-child{border-radius:0 var(--r-m) var(--r-m) 0}
+.lg-k{display:block;font-size:12.5px;font-weight:600;color:var(--muted)}
+.lg-stack b{display:block;margin-top:4px;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.lg-stack li.plus b{color:var(--lg)}
+.lg-stack small{display:block;margin-top:4px;font-size:13px;color:var(--ink-2);line-height:1.5}
+.lg-stack li.owner{opacity:.5}
+.lg-stack li.owner.on{opacity:1;background:var(--lg-soft)}
+.lg-toggle{position:relative;display:inline-flex;align-items:center;gap:12px;margin-top:18px;cursor:pointer;font-size:15px;font-weight:600;line-height:1.4}
+.lg-toggle input{position:absolute;opacity:0;width:1px;height:1px}
+.lg-toggle em{display:block;font-style:normal;font-size:12.5px;font-weight:500;color:var(--muted)}
+.sw-track{flex:none;position:relative;width:46px;height:28px;border-radius:999px;background:var(--line-2);transition:background .2s}
+.sw-track::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s var(--ease)}
+.lg-toggle input:checked+.sw-track{background:var(--lg)}
+.lg-toggle input:checked+.sw-track::after{transform:translateX(18px)}
+.lg-toggle input:focus-visible+.sw-track{outline:2px solid var(--accent);outline-offset:2px}
+.lg-fine{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;line-height:1.75;color:var(--muted)}
+.sheet-owner{margin-top:12px;padding:12px 14px;border-radius:var(--r-m);background:var(--lg-soft);border:1px solid color-mix(in srgb,var(--lg) 18%,var(--line))}
+.sheet-owner .lg-toggle{margin-top:0;font-size:14px}
+.lg-row.lg-extra .k,.lg-row.lg-extra .v{color:var(--lg)}
+.lg-row.lg-extra .v{font-weight:700}
+#owner-chip[aria-pressed="true"]{background:var(--lg);border-color:var(--lg);color:#fff}
+@media (max-width:760px){
+  html[data-audience="lg"] .season-card{display:none}
+  .season-card{margin-top:22px;padding:16px;grid-template-columns:40px minmax(0,1fr)}
+  .season-ic{width:40px;height:40px}
+  .lg-card{padding:24px 18px 20px}
+  .lg-card h2{font-size:21px}
+  .lg-stack{grid-template-columns:1fr}
+  .lg-stack li{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px;padding:14px 16px}
+  .lg-stack li b{grid-row:span 2;grid-column:2;margin:0;font-size:22px;text-align:right}
+  .lg-stack li+li{border-left:0;border-top:1px solid var(--line)}
+  .lg-stack li+li::before{left:50%;top:-13px;margin:0 0 0 -13px}
+  .lg-stack li:first-child{border-radius:var(--r-m) var(--r-m) 0 0}
+  .lg-stack li:last-child{border-radius:0 0 var(--r-m) var(--r-m)}
+}
 </style>
 </head>
 <body id="top">
@@ -754,6 +858,18 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="s-sunrise" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 5v3M5.6 8.6l1.8 1.8M18.4 8.6l-1.8 1.8M8 21h8"/></symbol>
+  <symbol id="s-flower" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="7" r="3"/><circle cx="16.8" cy="10.5" r="3"/><circle cx="15" cy="16" r="3"/><circle cx="9" cy="16" r="3"/><circle cx="7.2" cy="10.5" r="3"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></g></symbol>
+  <symbol id="s-sprout" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 21v-9M12 12C12 8 9 6 5 6c0 4 3 6 7 6ZM12 14.5c0-3.5 2.5-5.5 6.5-5.5 0 3.5-2.5 5.5-6.5 5.5Z"/></symbol>
+  <symbol id="s-leaf" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M5 19C5 10 10 5 20 4c0 10-5 15-15 15ZM5 19l8-8"/></symbol>
+  <symbol id="s-drop" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></symbol>
+  <symbol id="s-wave" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M3 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></symbol>
+  <symbol id="s-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+  <symbol id="s-cosmos" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 10c-1.6-2-1.6-4.6 0-6.5 1.6 1.9 1.6 4.5 0 6.5ZM12 14c1.6 2 1.6 4.6 0 6.5-1.6-1.9-1.6-4.5 0-6.5ZM10 12c-2 1.6-4.6 1.6-6.5 0 1.9-1.6 4.5-1.6 6.5 0ZM14 12c2-1.6 4.6-1.6 6.5 0-1.9 1.6-4.5 1.6-6.5 0Z"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></g></symbol>
+  <symbol id="s-maple" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M12 21v-6.5M12 3l1.8 3.6 3.2-1-1 3.6 3.5 1.3-3.3 2.3 1 2.7-3.7-.8L12 15l-1.5-1.3-3.7.8 1-2.7-3.3-2.3 3.5-1.3-1-3.6 3.2 1Z"/></symbol>
+  <symbol id="s-ginkgo" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8M12 13c-3.6 0-7.2-2.6-7.7-7.6C7 4.3 9.5 3.8 12 3.8s5 .5 7.7 1.6c-.5 5-4.1 7.6-7.7 7.6ZM12 3.8V8"/></symbol>
+  <symbol id="s-gift" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9C10.5 6 7 5 7 7.5S10 9 12 9Zm0 0c1.5-3 5-4 5-1.5S14 9 12 9Z"/></g></symbol>
+
 </svg>
 
 <header class="site-header">
@@ -778,6 +894,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <li><svg><use href="#i-check"/></svg>만원 미만 절삭</li>
         <li><svg><use href="#i-check"/></svg>고객별 추가 할인 미포함</li>
       </ul>
+      <aside class="season-card" id="season-card" hidden></aside>
     </div>
     <aside class="advisor" aria-label="담당 컨설턴트">
       <div class="adv-stage">
@@ -799,6 +916,23 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     </aside>
   </div>
   <div class="container"><div class="kpis" id="kpis"><button type="button" class="kpi" data-kpi="open" data-id="17"><div class="kpi-label">최대 할인율</div><div class="kpi-value num">20<small>%</small></div><div class="kpi-sub">MY26 E 200 EXCLUSIVE · 금융 이용 시</div><svg class="kpi-go" aria-hidden="true"><use href="#i-chev"></use></svg></button><button type="button" class="kpi" data-kpi="zero" data-id=""><div class="kpi-label">무이자 할부 대상</div><div class="kpi-value num">43<small>개 모델</small></div><div class="kpi-sub">24·36개월 무이자 · 선수금 조건 모델별 상이</div><svg class="kpi-go" aria-hidden="true"><use href="#i-chev"></use></svg></button><button type="button" class="kpi" data-kpi="rates" data-id=""><div class="kpi-label">최저 할부 금리</div><div class="kpi-value num">3.84<small>%</small></div><div class="kpi-sub">GLE 450 등 · 리텐션 3.44%</div><svg class="kpi-go" aria-hidden="true"><use href="#i-chev"></use></svg></button><button type="button" class="kpi" data-kpi="chg" data-id=""><div class="kpi-label">11월 조건 변경</div><div class="kpi-value num">9<small>개 모델</small></div><div class="kpi-sub">신규 추가 · 할인율 변경 모델</div><svg class="kpi-go" aria-hidden="true"><use href="#i-chev"></use></svg></button></div></div>
+</section>
+
+<section class="section lg-only" id="lg-benefit" aria-labelledby="lg-title">
+  <div class="container">
+    <div class="lg-card">
+      <p class="lg-eyebrow">LG 임직원 전용 혜택</p>
+      <h2 id="lg-title">기본 프로모션에 더해<br>임직원 추가 할인이 적용됩니다</h2>
+      <p class="lg-desc">이달의 기본 조건에서 LG 임직원분들은 <b>추가 2% 할인</b>, 현재 벤츠를 보유 중이시라면 <b>추가 1% 할인</b>이 가능합니다.</p>
+      <ol class="lg-stack">
+        <li><span class="lg-k">기본 조건</span><b>이달의 할인</b><small>모델별 현금·금융 이용 기준</small></li>
+        <li class="plus"><span class="lg-k">LG 임직원</span><b>+2%</b><small>임직원분께 추가 할인</small></li>
+        <li class="plus owner" id="lg-owner-step"><span class="lg-k">벤츠 보유 시</span><b>+1%</b><small>현재 벤츠를 보유 중이시라면</small></li>
+      </ol>
+      <label class="lg-toggle"><input type="checkbox" class="js-owner" role="switch"><span class="sw-track" aria-hidden="true"></span><span>현재 벤츠를 보유 중이에요<em>켜면 아래 가격표 전체에 추가 1%가 반영됩니다</em></span></label>
+      <p class="lg-fine">아래 가격표는 기본 조건에 임직원 추가 할인을 더해 계산한 금액입니다(만원 미만 절삭). 임직원 확인 방법과 세부 적용 기준, 다른 혜택과의 중복 여부는 상담 시 정확히 안내드립니다.</p>
+    </div>
+  </div>
 </section>
 
 <section class="section" aria-labelledby="chg-title">
@@ -850,6 +984,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
           <button type="button" class="chip" data-flag="zero" aria-pressed="false"><svg><use href="#i-check"/></svg>무이자 할부</button>
           <button type="button" class="chip" data-flag="chg" aria-pressed="false"><svg><use href="#i-check"/></svg>11월 변경</button>
         </div>
+        <button type="button" class="chip lg-only" id="owner-chip" aria-pressed="false"><svg><use href="#i-check"/></svg>벤츠 보유 +1%</button>
         <label class="select">
           <span class="sr-only">정렬</span>
           <select id="sort">
@@ -971,6 +1106,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     <div>
       <p class="ft-sign">벤츠 일산전시장 김대훈 차장<span class="num">010-2529-6216</span></p>
       <p class="ft-meta">2026년 11월 2일자 메르세데스-벤츠 11월 리테일 프로모션 기준으로 작성되었습니다. 방문 전에 먼저 연락 주시면 제가 직접 상담해 드립니다.</p>
+      <p class="ft-season" id="ft-season" hidden></p>
     </div>
     <a class="btn btn-text" href="#top">맨 위로</a>
   </div>
@@ -1060,6 +1196,94 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     return null;
   }
 
+  /* ------------------------------------------------------------------
+     Season — 가격 자료의 달(PROMO_END) 기준. ?season=1~12 로 미리보기
+     ------------------------------------------------------------------ */
+  var ROOT = document.documentElement;
+  var BASE = ROOT.getAttribute('data-base') || '';
+  var SEASONS = {
+    1:  { n: '한겨울', deep: '#3d6fa8', tint: '#e8eff8', icon: 's-sunrise', fx: 'snow',
+          greet: '새해 복 많이 받으세요.<br>1월 조건, <b>한 페이지로 정리</b>했어요.',
+          tip: ['추운 아침엔 배터리와 타이어부터', '기온이 떨어지면 타이어 공기압이 낮아지고 배터리 힘도 약해집니다. 출발 전에 계기판 경고등과 공기압을 한 번 확인해 주세요.'],
+          bye: '새해에도 늘 안전 운전하세요' },
+    2:  { n: '늦겨울', deep: '#56709b', tint: '#edf0f6', icon: 's-flower', fx: 'snow',
+          greet: '봄을 기다리는 2월,<br>조건은 <b>한 페이지로 정리</b>했어요.',
+          tip: ['겨울 제설제, 하부 세차로 씻어 내세요', '겨울 도로의 제설제가 차량 하부에 남아 있으면 부식의 원인이 됩니다. 날이 풀리면 하부 세차를 한 번 해 주세요.'],
+          bye: '남은 겨울도 따뜻하게 보내세요' },
+    3:  { n: '이른 봄', deep: '#a8841a', tint: '#f8f4e2', icon: 's-sprout', fx: 'petal',
+          greet: '새봄 3월, 새 차 고민도<br><b>한 페이지로 정리</b>했어요.',
+          tip: ['겨울용 타이어, 이제 바꿀 때예요', '기온이 7도 이상으로 오르면 사계절·여름용 타이어가 제동과 연비에 유리합니다. 교체하면서 마모 상태도 함께 확인해 보세요.'],
+          bye: '새봄, 좋은 일만 가득하세요' },
+    4:  { n: '봄', deep: '#c0577a', tint: '#fbeef2', icon: 's-flower', fx: 'petal',
+          greet: '벚꽃 피는 4월,<br>조건은 <b>한 페이지로 정리</b>했어요.',
+          tip: ['꽃가루·황사철, 에어컨 필터 점검', '봄철 미세먼지와 꽃가루가 많을 때는 실내 공기 필터 상태가 중요합니다. 교체 주기가 지났다면 점검을 받아 보세요.'],
+          bye: '봄나들이 안전 운전하세요' },
+    5:  { n: '늦봄', deep: '#3f8a5a', tint: '#ecf6ee', icon: 's-leaf', fx: '',
+          greet: '가정의 달 5월,<br>가족 차 고민도 <b>한 페이지로 정리</b>했어요.',
+          tip: ['나들이 전 와이퍼와 워셔액 확인', '장거리 운전이 많은 계절입니다. 와이퍼 고무 상태와 워셔액을 미리 확인해 두면 갑작스러운 비에도 시야를 지킬 수 있어요.'],
+          bye: '가족과 행복한 5월 보내세요' },
+    6:  { n: '초여름', deep: '#4a6fb5', tint: '#ecf1fa', icon: 's-drop', fx: '',
+          greet: '초여름 6월,<br>조건은 <b>한 페이지로 정리</b>했어요.',
+          tip: ['장마 전 에어컨과 와이퍼 점검', '장마가 오기 전에 에어컨 냄새와 성능, 와이퍼 작동을 점검해 두세요. 빗길에서는 평소보다 차간 거리를 넉넉히 두는 것이 좋습니다.'],
+          bye: '건강한 여름 맞이하세요' },
+    7:  { n: '한여름', deep: '#1f7fa3', tint: '#e7f4f8', icon: 's-wave', fx: '',
+          greet: '시원한 여름 되세요.<br>7월 조건, <b>한 페이지로 정리</b>했어요.',
+          tip: ['뜨거운 차 안에 물건 두지 마세요', '한여름 차 안은 짧은 시간에도 크게 뜨거워집니다. 보조배터리·라이터·음료 캔은 두고 내리지 말고, 출발 전 창문을 잠시 열어 열기를 빼 주세요.'],
+          bye: '무더위에 건강 조심하세요' },
+    8:  { n: '늦여름', deep: '#c26a2b', tint: '#fbf0e5', icon: 's-sun', fx: '',
+          greet: '휴가철 8월,<br>조건은 <b>한 페이지로 정리</b>했어요.',
+          tip: ['휴가 떠나기 전 타이어 점검', '고속 주행이 길어지는 휴가철에는 타이어 공기압과 마모 상태가 특히 중요합니다. 출발 전 냉각수와 경고등도 함께 확인해 주세요.'],
+          bye: '즐거운 휴가 보내세요' },
+    9:  { n: '초가을', deep: '#a0567c', tint: '#f7edf2', icon: 's-cosmos', fx: '',
+          greet: '하늘 높은 9월,<br>조건은 <b>한 페이지로 정리</b>했어요.',
+          tip: ['명절 장거리 운전 전 점검', '귀성길처럼 오래 운전할 때는 엔진오일, 브레이크, 타이어를 미리 점검해 두세요. 두 시간마다 쉬어 가는 것도 잊지 마세요.'],
+          bye: '풍성한 한가위 보내세요' },
+    10: { n: '가을', deep: '#b5532a', tint: '#faeee6', icon: 's-maple', fx: 'leaf',
+          greet: '단풍 드는 10월,<br>조건은 <b>한 페이지로 정리</b>했어요.',
+          tip: ['해가 짧아졌어요, 전조등 확인', '해가 빨리 지는 계절입니다. 전조등과 브레이크등이 모두 켜지는지 확인하고, 해 질 무렵에는 조금 일찍 라이트를 켜 주세요.'],
+          bye: '단풍처럼 고운 가을 보내세요' },
+    11: { n: '늦가을', deep: '#a77a12', tint: '#f8f1df', icon: 's-ginkgo', fx: 'leaf',
+          greet: '쌀쌀해진 11월,<br>조건은 제가 <b>한 페이지로 정리</b>했어요.',
+          tip: ['겨울이 오기 전, 타이어와 배터리', '아침 기온이 떨어지면 타이어 공기압 경고등이 켜지기 쉽습니다. 겨울용 타이어 교체 시기와 배터리 상태를 미리 점검해 두세요.'],
+          bye: '따뜻한 늦가을 보내세요' },
+    12: { n: '연말', deep: '#2f6553', tint: '#eaf2ee', icon: 's-gift', fx: 'snow',
+          greet: '한 해 마무리 잘하세요.<br>12월 조건, <b>한 페이지로 정리</b>했어요.',
+          tip: ['눈길 대비, 미리 준비하세요', '첫눈이 오기 전에 겨울용 타이어나 스노우 체인을 준비하고 워셔액은 겨울용으로 바꿔 두세요. 눈길에서는 급제동보다 천천히 감속하는 것이 안전합니다.'],
+          bye: '따뜻한 연말 보내세요' }
+  };
+  var SEASON_M = (function () {
+    var q = /[?&]season=(\d{1,2})/.exec(location.search), m = q ? +q[1] : PROMO_END.getMonth() + 1;
+    return SEASONS[m] ? m : PROMO_END.getMonth() + 1;
+  })();
+  var SEASON = SEASONS[SEASON_M];
+
+  /* ------------------------------------------------------------------
+     Audience — LG 임직원 페이지는 <html data-audience="lg">
+     기본 조건(현금·금융 할인)에 임직원 +2%, 벤츠 보유 시 +1%
+     ------------------------------------------------------------------ */
+  var LG = ROOT.getAttribute('data-audience') === 'lg';
+  var LG_EMP = 2, LG_OWN = 1, lgOwner = false;
+  ROWS.forEach(function (r) { r._base = { cash: r.cash, fin: r.fin, nodisc: r.nodisc }; });
+  function lgExtra() { return LG_EMP + (lgOwner ? LG_OWN : 0); }
+  function smsTag() { return LG ? '[벤츠 일산 · LG 임직원' + (lgOwner ? ' · 벤츠 보유' : '') + ']' : '[벤츠 일산]'; }
+  function applyLG() {
+    if (!LG) return;
+    var e = lgExtra();
+    ROWS.forEach(function (r) {
+      var b = r._base;
+      r.cash = b.cash; r.fin = b.fin; r.nodisc = b.nodisc; r._lg = null;
+      if (r.tbd || !r.price) return;
+      var cut = function (p) { return Math.floor(r.price * p / 100 / 10000) * 10000; };
+      var tot = cut(e), emp = cut(LG_EMP), own = tot - emp;
+      var c0 = b.nodisc ? { pct: 0, disc: 0, final: r.price, label: '현금 구매' } : b.cash;
+      r.cash = { pct: c0.pct + e, disc: c0.disc + tot, final: c0.final - tot, label: c0.label };
+      if (b.fin) r.fin = { pct: b.fin.pct + e, disc: b.fin.disc + tot, final: b.fin.final - tot, label: b.fin.label };
+      r.nodisc = false;
+      r._lg = { e: e, emp: emp, own: own, c0: c0, f0: b.fin, nod: b.nodisc };
+    });
+  }
+  applyLG();
+
   // Search keywords incl. Korean aliases
   ROWS.forEach(function (r) {
     var n = r.name, k = [r.my, n, r.badge, SEC_NAME[r.sec], r.chg || ''];
@@ -1080,7 +1304,8 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   /* ------------------------------------------------------------------
      Exterior colours (실제 판매 색상 · 도장 코드 · 색상별 이미지)
      ------------------------------------------------------------------ */
-  var SSR_MODE = location.hash === '#ssr';   // 빌드 시 사전 렌더링 중인지
+  var SSR_MODE = location.hash === '#ssr';
+  var REDUCE_M = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);   // 빌드 시 사전 렌더링 중인지
   var COLORS = JSON.parse(document.getElementById('color-data').textContent);
   var COLOR_BASE = 'https://mb-hansdream.co.kr/';
   var COLOR_PAGE = {
@@ -1151,7 +1376,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   /* ------------------------------------------------------------------
      KPIs
      ------------------------------------------------------------------ */
-  (function () {
+  function drawKpis() {
     var top = ROWS.reduce(function (a, r) { return bestPct(r) > bestPct(a) ? r : a; }, ROWS[0]);
     var zero = ROWS.filter(function (r) { return r.rate && r.rate.z; }).length;
     var rated = ROWS.filter(function (r) { return r.rate; });
@@ -1160,7 +1385,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     var minRow = rated.filter(function (r) { return r.rate.g === minG; })[0];
     var chg = ROWS.filter(function (r) { return r.chg; }).length;
     var html = [
-      ['open', top.id, '최대 할인율', bestPct(top) + '<small>%</small>', top.my + ' ' + top.name + ' · 금융 이용 시'],
+      ['open', top.id, LG ? '최대 할인율 · 임직원 포함' : '최대 할인율', bestPct(top) + '<small>%</small>', top.my + ' ' + top.name + ' · 금융 이용 시'],
       ['zero', '', '무이자 할부 대상', zero + '<small>개 모델</small>', '24·36개월 무이자 · 선수금 조건 모델별 상이'],
       ['rates', '', '최저 할부 금리', minG.toFixed(2) + '<small>%</small>', minRow.name.replace(/ 4MATIC.*/, '') + ' 등 · 리텐션 ' + minGr.toFixed(2) + '%'],
       ['chg', '', '11월 조건 변경', chg + '<small>개 모델</small>', '신규 추가 · 할인율 변경 모델']
@@ -1170,6 +1395,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         icon('i-chev', 'kpi-go') + '</button>';
     }).join('');
     $('#kpis').innerHTML = html;
+  }
+  drawKpis();
+  (function () {
     $('#kpis').addEventListener('click', function (e) {
       var b = e.target.closest('.kpi'); if (!b) return;
       var t = b.dataset.kpi;
@@ -1295,7 +1523,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     im.onerror = function () { if (current === r) { hero.classList.remove('loading'); toast('이 색상의 이미지를 불러오지 못했습니다'); } };
     im.src = url;
     if (auto) return;   // 처음 열 때 자동 선택된 대표 색상은 문자 문의에 넣지 않음
-    $('#sh-sms').href = smsHref('[벤츠 일산] ' + r.my + ' ' + r.name + ' (' + x[1] + ') 11월 조건 문의드립니다.');
+    $('#sh-sms').href = smsHref(smsTag() + ' ' + r.my + ' ' + r.name + ' (' + x[1] + ') 11월 조건 문의드립니다.');
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('#sh-body .sw'); if (b) selectColor(+b.dataset.ci);
@@ -1340,8 +1568,8 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         '<button type="button" class="mbtn" data-id="' + r.id + '" aria-haspopup="dialog"><span class="my">' + r.my + '</span>' + esc(r.name) + '</button>' +
         tagsFor(r, withSec) + dotsHtml(r) + '</div></div></td>' +
       '<td class="c-msrp m-msrp" data-label="권장 소비자가">' + msrp + '</td>' +
-      '<td class="c-cash' + (cashBest ? ' best-cell' : '') + (finBest ? ' m-secondary' : ' m-primary') + '" data-label="' + (r.tbd ? '11월 조건' : '현금 구매') + '">' + cash + '</td>' +
-      '<td class="c-fin' + (finBest ? ' best-cell m-primary' : ' m-secondary') + (fin === DASH ? ' td-empty' : '') + '" data-label="금융 이용 시">' + fin + '</td>' +
+      '<td class="c-cash' + (cashBest ? ' best-cell' : '') + (finBest ? ' m-secondary' : ' m-primary') + '" data-label="' + (r.tbd ? '11월 조건' : r._lg ? '현금 구매 · 임직원가' : '현금 구매') + '">' + cash + '</td>' +
+      '<td class="c-fin' + (finBest ? ' best-cell m-primary' : ' m-secondary') + (fin === DASH ? ' td-empty' : '') + '" data-label="' + (r._lg ? '금융 이용 · 임직원가' : '금융 이용 시') + '">' + fin + '</td>' +
       '<td class="c-go"><span class="go-label">상세 · 월 납입 계산</span>' + icon('i-chev', 'go') + '</td>' +
       (SSR_MODE ? '<td class="c-nojs"><details><summary>상세 조건 보기</summary><div class="nojs-body">' +
         '<h4>가격 구성</h4>' + priceSection(r) + '<h4>11월 할부 금리</h4>' + rateSection(r) +
@@ -1350,7 +1578,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   }
   function tableHtml(rows, withSec) {
     return '<table class="ptable"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"></colgroup>' +
-      '<thead><tr><th scope="col">모델</th><th scope="col">권장 소비자가</th><th scope="col">현금 구매</th><th scope="col" class="th-best">금융 이용 시<small>벤츠 파이낸셜</small></th><th scope="col"><span class="sr-only">상세</span></th></tr></thead>' +
+      '<thead><tr><th scope="col">모델</th><th scope="col">권장 소비자가</th><th scope="col">현금 구매' + (LG ? '<small>임직원 +' + lgExtra() + '% 반영</small>' : '') + '</th><th scope="col" class="th-best">금융 이용 시<small>벤츠 파이낸셜' + (LG ? ' · 임직원 +' + lgExtra() + '%' : '') + '</small></th><th scope="col"><span class="sr-only">상세</span></th></tr></thead>' +
       '<tbody>' + rows.map(function (r) { return rowHtml(r, withSec); }).join('') + '</tbody></table>';
   }
 
@@ -1360,6 +1588,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     $('#result-text').innerHTML = isFiltered()
       ? '전체 ' + ROWS.length + '개 중 <b class="num">' + rs.length + '개</b> 모델'
       : '<b class="num">' + ROWS.length + '개</b> 모델 · 금액 단위 만원';
+    if (LG) $('#result-text').innerHTML += ' · <b style="color:var(--lg)">임직원 +' + lgExtra() + '% 반영</b>';
     $('#reset').hidden = !isFiltered();
 
     if (!rs.length) {
@@ -1414,7 +1643,22 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   function ledgerRow(k, v, cls, sub) {
     return '<div class="lg-row ' + (cls || '') + '"><span class="k">' + k + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span><span class="v num">' + v + '</span></div>';
   }
+  function priceSectionLG(r) {
+    var L = r._lg, c0 = L.c0, f0 = L.f0, t = f0 ? r.fin : r.cash;
+    var h = '<div class="ledger">' + ledgerRow('권장 소비자가', manwon(r.price)) +
+      (L.nod ? ledgerRow('기본 할인', '없음', 'neg') : ledgerRow('기본 할인 ' + c0.pct + '%', '−' + manwon(c0.disc), 'neg'));
+    if (f0) h += ledgerRow('금융 이용 추가 할인 +' + (f0.pct - c0.pct) + '%p', '−' + manwon(f0.disc - c0.disc), 'neg', f0.label);
+    h += ledgerRow('LG 임직원 추가 할인 +' + LG_EMP + '%', '−' + manwon(L.emp), 'lg-extra');
+    if (L.own) h += ledgerRow('벤츠 보유 추가 할인 +' + LG_OWN + '%', '−' + manwon(L.own), 'lg-extra', '현재 벤츠 보유 고객');
+    if (f0) h += ledgerRow('현금 구매 시 임직원가', manwon(r.cash.final), 'sub-total', '총 ' + r.cash.pct + '% 할인');
+    h += ledgerRow((f0 ? '금융 이용 시' : '현금 구매 시') + ' 임직원가', manwon(t.final), 'total', '총 ' + t.pct + '% · ' + manwon(t.disc) + ' 할인') + '</div>';
+    h += '<div class="sheet-owner"><label class="lg-toggle"><input type="checkbox" class="js-owner" role="switch"' + (lgOwner ? ' checked' : '') + '><span class="sw-track" aria-hidden="true"></span><span>현재 벤츠를 보유 중이에요<em>추가 1%를 반영해 다시 계산합니다</em></span></label></div>';
+    if (r.lines) h += '<div class="extra-list">' + r.lines.map(function (l) { return ledgerRow(esc(l[0]) + ' · ' + esc(l[1]), manwon(l[2]), '', l[3] + ' · 일반 고객 기준'); }).join('') + '</div>';
+    if (r.note) h += '<div class="callout">' + esc(r.note) + '</div>';
+    return h;
+  }
   function priceSection(r) {
+    if (LG && r._lg) return priceSectionLG(r);
     var h = '';
     if (r.tbd) {
       h = '<div class="ledger">' + ledgerRow('권장 소비자가', r.price ? manwon(r.price) : '확정 전') + '</div>' +
@@ -1440,6 +1684,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
       h += '<div class="extra-list">' + r.lines.map(function (l) { return ledgerRow(esc(l[0]) + ' · ' + esc(l[1]), manwon(l[2]), '', l[3]); }).join('') + '</div>';
     }
     if (r.note) h += '<div class="callout">' + esc(r.note) + '</div>';
+    if (LG) h += '<div class="callout">LG 임직원 추가 할인(+2%, 벤츠 보유 시 +1%)은 조건이 확정되면 함께 계산해 안내드립니다.</div>';
     return h;
   }
   function rateSection(r) {
@@ -1453,8 +1698,8 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   }
   function calcSection(r) {
     var bases = [];
-    if (r.fin) bases.push(['금융 이용가', r.fin.final]);
-    if (r.cash && r.cash.final) bases.push(['현금 구매가', r.cash.final]);
+    if (r.fin) bases.push([LG && r._lg ? '금융 이용 임직원가' : '금융 이용가', r.fin.final]);
+    if (r.cash && r.cash.final) bases.push([LG && r._lg ? '현금 구매 임직원가' : '현금 구매가', r.cash.final]);
     if (!bases.length && r.price && !r.tbd) bases.push(['권장 소비자가', r.price]);
     if (!bases.length) return '';
     var rt = r.rate, presets = rt ? [['일반', rt.g], ['일반 · 리텐션', rt.gr], ['안심보장', rt.s], ['안심 · 리텐션', rt.sr]] : [];
@@ -1532,7 +1777,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
       calcSection(r) +
       '<div class="d-contact"><span class="face lg p-smile" aria-hidden="true"></span><p><b>김대훈 차장</b>이 이 모델의 재고와 인도 일정, 고객님께 해당되는 추가 혜택까지 확인해 정확한 견적으로 안내드립니다.</p></div>';
     shBody.scrollTop = 0;
-    $('#sh-sms').href = smsHref('[벤츠 일산] ' + r.my + ' ' + r.name + ' 11월 조건 문의드립니다.');
+    $('#sh-sms').href = smsHref(smsTag() + ' ' + r.my + ' ' + r.name + ' 11월 조건 문의드립니다.');
     calcUpdate();
     if (r._pc) selectColor(0, true);
     sheetSpeak(r);
@@ -1591,7 +1836,8 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   });
 
   // Generic SMS links
-  $$('.js-sms').forEach(function (a) { a.href = smsHref('[벤츠 일산] 11월 조건 문의드립니다.'); });
+  function genericSms() { $$('.js-sms').forEach(function (a) { a.href = smsHref(smsTag() + ' 11월 조건 문의드립니다.'); }); }
+  genericSms();
 
   /* ------------------------------------------------------------------
      Rate table
@@ -1696,14 +1942,14 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     var head = big ? '이번 달 조건 좋아요! ' : '이 모델은 ';
     if (f) {
       var lease = /운용리스·장기렌트 (\d+)%/.exec(f.label);
-      if (lease) main = head + '할부 이용 시 <b>' + f.pct + '%</b>, 운용리스·장기렌트는 <b>' + lease[1] + '%</b>예요.';
+      if (lease) main = head + '할부 이용 시 <b>' + f.pct + '%</b>, 운용리스·장기렌트는 <b>' + (+lease[1] + (r._lg ? r._lg.e : 0)) + '%</b>예요.';
       else if (/^운용리스/.test(f.label)) main = head + '운용리스·장기렌트 이용 시 <b>' + f.pct + '%</b>, 현금보다 ' + manwon(c.final - f.final) + ' 더 저렴해요.';
       else main = head + '금융 이용 시 <b>최종 ' + f.pct + '%</b>' + (big ? ', ' + manwon(f.disc) + ' 할인이에요.' : '예요. 현금보다 ' + manwon(c.final - f.final) + ' 더 저렴해요.');
     } else {
       main = head + '현금 구매 시 <b>' + c.pct + '%</b>, ' + manwon(c.disc) + ' 할인이에요.';
     }
     var extra = r.lines ? ' 재구매 고객은 <b>' + esc(r.lines[0][1]) + '</b>까지 가능해요.' : zero || (r.chg ? ' 11월에 조건이 바뀐 모델이에요.' : '');
-    return { mood: big ? 'wow' : 'talk', html: main + extra };
+    return { mood: big ? 'wow' : 'talk', html: main + extra + (r._lg ? ' 임직원 할인 <b>+' + r._lg.e + '%</b>까지 반영했어요.' : '') };
   }
   function sheetSpeak(r) {
     var say = $('#sh-say'); if (!say) return;
@@ -1790,6 +2036,70 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     }, { threshold: .45 });
     io.observe(art.parentNode);
   })();
+
+
+  /* ------------------------------------------------------------------
+     Season UI — 칩, 이달의 노트, 인사말, 계절 그림, 떨어지는 잎
+     ------------------------------------------------------------------ */
+  (function () {
+    var S = SEASON, m = SEASON_M, mm = (m < 10 ? '0' : '') + m;
+    ROOT.setAttribute('data-season', m);
+    ROOT.style.setProperty('--s-deep', S.deep);
+    ROOT.style.setProperty('--s-tint', S.tint);
+    var ic = function (cls) { return '<svg class="' + (cls || '') + '" aria-hidden="true"><use href="#' + S.icon + '"/></svg>'; };
+    var kicker = $('.intro .kicker');
+    if (kicker) kicker.insertAdjacentHTML('afterbegin', '<span class="season-chip">' + ic() + S.n + ' · ' + m + '월</span><span class="sep"></span>');
+    var card = $('#season-card');
+    if (card) {
+      card.innerHTML = '<span class="season-ic">' + ic() + '</span><span class="season-lbl">' + m + '월의 드라이브 노트</span><h3>' + esc(S.tip[0]) + '</h3><p>' + esc(S.tip[1]) + '</p>';
+      card.setAttribute('aria-label', m + '월의 드라이브 노트');
+      card.hidden = false;
+    }
+    var hb = $('#hero-bubble');
+    if (hb) hb.innerHTML = LG ? 'LG 임직원분들께는<br><b>추가 2% 할인</b>이 적용돼요.' : S.greet;
+    var ft = $('#ft-season');
+    if (ft) { ft.innerHTML = ic() + esc(S.bye); ft.hidden = false; }
+    // 계절 그림은 도착한 뒤에만 보여 줌 (없거나 실패하면 색만 바뀜)
+    var url = BASE + 'assets/season/' + mm + '.webp', im = new Image();
+    im.onload = function () { ROOT.style.setProperty('--season-img', 'url("' + url + '")'); ROOT.classList.add('has-season-img'); };
+    im.src = url;
+    // 떨어지는 잎·꽃잎·눈: 첫 화면에 몇 개만, 움직임 줄이기 설정이면 없음
+    if (S.fx && !REDUCE_M && !SSR_MODE) {
+      var intro = $('.intro'), fx = document.createElement('div'), n = window.innerWidth < 760 ? 10 : 18, h = '';
+      fx.className = 'season-fx ' + S.fx; fx.setAttribute('aria-hidden', 'true');
+      if (S.fx === 'leaf') fx.style.setProperty('--sprite', 'url("' + BASE + 'assets/season/leaf-' + m + '.webp")');   // Codex 수채화 잎 4종
+      for (var i = 0; i < n; i++) {
+        var size = S.fx === 'snow' ? 4 + Math.random() * 5 : S.fx === 'leaf' ? 16 + Math.random() * 12 : 8 + Math.random() * 6;
+        var dur = 9 + Math.random() * 7;
+        h += '<i style="--x:' + (Math.random() * 100).toFixed(1) + '%;--s:' + size.toFixed(1) + 'px;--d:' + dur.toFixed(1) + 's;--w:' + (-Math.random() * dur).toFixed(1) + 's;--dx:' + (Math.random() * 140 - 50).toFixed(0) + 'px;--o:' + (.75 + Math.random() * .2).toFixed(2) + ';--f:' + (i % 4) + '"></i>';
+      }
+      fx.innerHTML = h;
+      document.body.insertBefore(fx, document.body.firstChild);
+      var setH = function () { fx.style.setProperty('--h', (window.innerHeight + 40) + 'px'); };
+      setH(); window.addEventListener('resize', setH);
+    }
+  })();
+
+  /* ------------------------------------------------------------------
+     LG — 벤츠 보유 스위치 (안내 카드 · 가격표 칩 · 상세 패널이 함께 움직임)
+     ------------------------------------------------------------------ */
+  if (LG) {
+    var setOwner = function (on) {
+      lgOwner = !!on;
+      $$('.js-owner').forEach(function (x) { x.checked = lgOwner; });
+      $('#owner-chip').setAttribute('aria-pressed', String(lgOwner));
+      $('#lg-owner-step').classList.toggle('on', lgOwner);
+      applyLG(); drawKpis(); render(); genericSms();
+      if (current) {
+        var y = shBody.scrollTop;
+        openSheet(current.id, true);
+        shBody.scrollTop = y;
+      }
+      toast(lgOwner ? '벤츠 보유 추가 1%를 반영했습니다' : '임직원 추가 2% 기준으로 표시합니다');
+    };
+    document.addEventListener('change', function (e) { if (e.target.classList && e.target.classList.contains('js-owner')) setOwner(e.target.checked); });
+    $('#owner-chip').addEventListener('click', function () { setOwner(!lgOwner); });
+  }
 
   /* ------------------------------------------------------------------
      Init
